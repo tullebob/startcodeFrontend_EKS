@@ -18,7 +18,11 @@ import {
   Address,
   Movies,
   DigitalOcean,
-  SearchWord
+  SearchWord,
+  BooksTitle,
+  SearchBook,
+  DeleteBook,
+  CreateBook
 } from './Components';
 import apiFacade from './apiFacade';
 
@@ -60,6 +64,18 @@ function App() {
           <Route path="/search-word">
             <SearchWord />
           </Route>
+          <Route path="/admin-deleteBook">
+            <DeleteBook />
+          </Route>
+          <Route path="/admin-createBook">
+            <CreateBook />
+          </Route>
+          <Route path="/books-title">
+            <BooksTitle />
+          </Route>
+          <Route path="/book-search">
+            <SearchBook />
+          </Route>
           <Route path="/address-info">
            <Address />
           </Route>
@@ -93,12 +109,17 @@ function Header({ isLoggedIn, loginMsg }) {
       <li><NavLink exact activeClassName="active" to="/">Home</NavLink></li>
       <li><NavLink activeClassName="active" to="/search-word">Search Word</NavLink></li>
       <li><NavLink activeClassName="active" to="/address-info">Address Info</NavLink></li>
+      <li><NavLink activeClassName="active" to="/books-title">Books Title</NavLink></li>
+      <li><NavLink activeClassName="active" to="/book-search">Book Search</NavLink></li>
+
       {
         isLoggedIn &&
         (
           <React.Fragment>
             <li><NavLink activeClassName="active" to="/movie-reviews">Movies</NavLink></li>
             <li><NavLink activeClassName="active" to="/digitalocean-info">Digital Ocean Info</NavLink></li>
+            <li><NavLink activeClassName="active" to="/admin-deleteBook">Delete Book</NavLink></li>
+            <li><NavLink activeClassName="active" to="/admin-createBook">Create Book</NavLink></li>
           </React.Fragment>
         )
       }

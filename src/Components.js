@@ -4,6 +4,7 @@ import apiFacade from './apiFacade';
 import Table from 'react-bootstrap/Table';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import jwt_decode from "jwt-decode";
+import { booksByTitleURL } from './Settings';
 
 
 export function Home() {
@@ -13,6 +14,7 @@ export function Home() {
         </div>
     );
 }
+
 
 export function Login({ login }) {
 
@@ -38,11 +40,11 @@ export function Login({ login }) {
     )
 }
 
-export function LoggedIn({username}) {
+export function LoggedIn({ username }) {
 
-const  token = apiFacade.getToken();
-const  decoded = jwt_decode(token); // jwt_decode is an external library
-console.log(decoded);
+    const token = apiFacade.getToken();
+    const decoded = jwt_decode(token); // jwt_decode is an external library
+    console.log(decoded);
     return (
         <div>
             <h2>You are now logged in!</h2>
@@ -99,10 +101,10 @@ export function DigitalOcean() {
             </React.Fragment>
         )
     })
-    
-    useEffect (() => {
-               apiFacade.getDigitalOceanInfo()
-               .then(data => setDroplets(data.droplets))
+
+    useEffect(() => {
+        apiFacade.getDigitalOceanInfo()
+            .then(data => setDroplets(data.droplets))
     }, [string])
 
 
@@ -115,6 +117,59 @@ export function DigitalOcean() {
     )
 }
 
+
+export function BooksTitle() {
+    const [bookArray, setBookArray] = useState([]);
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        apiFacade.getBooksTitle()
+            .then(data => {
+                console.log(data);
+                const array = data;
+                setBookArray(array);
+            })
+    }
+
+    const allBooks = bookArray.map((book, index) => (
+        <div>
+            <ul key={index+1}>
+            <li>{book.title}</li>
+            </ul>
+            
+        </div>
+
+    )
+    );
+
+    return (
+        <div>
+            <div>
+                <button onClick={handleSubmit}>Submit</button>
+            </div>
+            <div>
+            {allBooks}
+            </div>
+
+        </div>
+    )
+}
+
+export function CreateBook(){
+    return(
+        <div>
+            
+        </div>
+    )
+}
+
+export function DeleteBook(){
+    return(
+        <div>
+
+        </div>
+    )
+}
 export function Movies() {
 
     const [movieSearchWord, setMovieSearchWord] = useState("");
@@ -123,28 +178,28 @@ export function Movies() {
     const handleSubmit = event => {
         event.preventDefault();
         apiFacade.getMovieReviews(movieSearchWord)
-        .then(data => {
-            const array = data.results;
-            setMovieArray(array);
-        })
-      };
+            .then(data => {
+                const array = data.results;
+                setMovieArray(array);
+            })
+    };
 
 
-      const allMovies = movieArray.map((movie, index)=> (
+    const allMovies = movieArray.map((movie, index) => (
         <div>
-            <ul key={index+1}>
+            <ul key={index + 1}>
                 <li>{movie.display_title} - <a href={movie.link.url}>Details</a></li>
                 <p>Review Summary: {movie.summary_short}</p>
             </ul>
             <hr></hr>
         </div>
-        )
+    )
     );
 
     return (
         <div>
             <div>
-                <input placeholder="Enter movie title" onChange={(event) => setMovieSearchWord(event.target.value)}/>
+                <input placeholder="Enter movie title" onChange={(event) => setMovieSearchWord(event.target.value)} />
                 <button onClick={handleSubmit}>Submit</button>
             </div>
             <br></br>
@@ -157,8 +212,8 @@ export function Movies() {
 
 export function SearchWord() {
 
-    const[searchWord, setSearchWord] = useState("");
-    const[wordArray, setWordArray] = useState([]);
+    const [searchWord, setSearchWord] = useState("");
+    const [wordArray, setWordArray] = useState([]);
 
     const displayArray = wordArray.map((word, index) => (
         <li key={index}>
@@ -171,10 +226,10 @@ export function SearchWord() {
     const handleSubmit = event => {
         event.preventDefault();
         apiFacade.searchWord(searchWord)
-        .then(array =>{
-            setWordArray(array);
-            console.log(array);
-        })
+            .then(array => {
+                setWordArray(array);
+                console.log(array);
+            })
     }
 
     return (
@@ -189,6 +244,43 @@ export function SearchWord() {
     )
 }
 
+
+export function SearchBook() {
+    const [searchTitle, setSearchTitle] = useState("");
+    const [searchAuthor, setSearchAuthor] = useState("");
+
+    const [searchArray, setSearchArray] = useState([]);
+
+    const displayArray = searchArray.map((word, index) => (
+        <li key={index}>
+            <p>ISBN: {word.isbn}</p>
+            <p>Title: {word.title}</p>
+            <p>Author: {word.author}</p>
+            <p>Publisher: {word.publisher}</p>
+            <p>Publish Year: {word.publishYear}</p>
+        </li>
+
+    )
+    )
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        apiFacade.searchBook(searchTitle, searchAuthor)
+            .then(array => {
+                setSearchArray(array);
+                console.log(array);
+            })
+    }
+    return (
+        <div>
+            <input placeholder="Enter title" onChange={(event) => setSearchTitle(event.target.value)}/>
+            <input placeholder="Enter author" onChange={(event) => setSearchAuthor(event.target.value)}/>
+            <button onClick={handleSubmit}>Search</button>
+            <p>{displayArray}</p>
+        </div>
+    )
+}
+
 export function Address() {
     const initialWeather = {
         Sunrise: "",
@@ -198,61 +290,61 @@ export function Address() {
         Temperature: "",
         ApparentTemperature: "",
         Description: ""
-      }
-      const [weather, setWeather] = useState(initialWeather);
-    
-      const initialValue = {
+    }
+    const [weather, setWeather] = useState(initialWeather);
+
+    const initialValue = {
         city: "",
         postalCode: "",
         streetName: "",
         streetNumber: ""
-      }
-    
-      const [address, setAddress] = useState(initialValue);
-      const [servicePoints, setServicePoints] = useState([]);
-      let [isBlocking, setIsBlocking] = useState(false);
-    
-      const handleChange = event => {
+    }
+
+    const [address, setAddress] = useState(initialValue);
+    const [servicePoints, setServicePoints] = useState([]);
+    let [isBlocking, setIsBlocking] = useState(false);
+
+    const handleChange = event => {
         const { id, value } = event.target;
         setIsBlocking(event.target.value.length > 0);
         setAddress({ ...address, [id]: value })
-      };
-    
-      const handleSubmit = event => {
+    };
+
+    const handleSubmit = event => {
         event.preventDefault();
         apiFacade.getServicePoints(address)
-        .then(data => {
-          const temp = data.weather.data[0];
-          setServicePoints(data.postnord.servicePointInformationResponse.servicePoints);
-          setWeather({
-            Sunrise: temp.sunrise,
-            Sunset: temp.sunset,
-            Datetime: temp.datetime,
-            Cityname: temp.city_name,
-            Temperature: temp.temp,
-            ApparentTemperature: temp.app_temp,
-            Description: temp.weather.description
-          })
-        })
-      };
+            .then(data => {
+                const temp = data.weather.data[0];
+                setServicePoints(data.postnord.servicePointInformationResponse.servicePoints);
+                setWeather({
+                    Sunrise: temp.sunrise,
+                    Sunset: temp.sunset,
+                    Datetime: temp.datetime,
+                    Cityname: temp.city_name,
+                    Temperature: temp.temp,
+                    ApparentTemperature: temp.app_temp,
+                    Description: temp.weather.description
+                })
+            })
+    };
 
-      return (
-          <div>
+    return (
+        <div>
             <AddressInfo isBlocking={isBlocking} handleChange={handleChange} handleSubmit={handleSubmit} servicePoints={servicePoints} />
             <WeatherInfo weather={weather} />
-          </div>
-      )
+        </div>
+    )
 }
 
-export function AddressInfo({isBlocking, handleChange, handleSubmit, servicePoints }) {
-    
+export function AddressInfo({ isBlocking, handleChange, handleSubmit, servicePoints }) {
+
 
     const allServicePoints = servicePoints.map(servicePoint => (
         <ul key={servicePoint.servicePointId}>
             <li>{servicePoint.servicePointId}</li>
             <li>{servicePoint.name}</li>
         </ul>
-        )
+    )
     );
 
     return (

@@ -1,4 +1,4 @@
-import URLS, {servicepointsURL, movieReviewURL, digitaloceanURL, loginURL} from './Settings';
+import URLS, {servicepointsURL, movieReviewURL, digitaloceanURL, loginURL, booksByTitleURL, searchBookURL} from './Settings';
 
 function getServicePoints(address) {
     const options = makeOptions("POST", true, address);
@@ -27,6 +27,19 @@ function searchWord(word) {
     .then(handleHttpErrors);
 }
 
+function getBooksTitle() {
+    const options = makeOptions("GET", true);
+    return fetch(booksByTitleURL, options)
+    .then(handleHttpErrors);
+}
+
+function searchBook(title, author) {
+    const options = makeOptions("GET", true);
+    return fetch(searchBookURL + "/" + title + "/" + author, options)
+    .then(handleHttpErrors);
+
+}
+
 const setToken = (token) => {
     localStorage.setItem('jwtToken', token)
 }
@@ -48,6 +61,8 @@ const login = (user, password) => {
         .then(res => { setToken(res.token) })
 }
 
+
+
 const apiFacade = {
     getServicePoints,
     getMovieReviews,
@@ -57,7 +72,9 @@ const apiFacade = {
     getToken,
     loggedIn,
     logout,
-    login
+    login,
+    getBooksTitle,
+    searchBook
 }
 
 function makeOptions(method, addToken, body) {
