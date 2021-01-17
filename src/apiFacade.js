@@ -1,31 +1,6 @@
-import URLS, {servicepointsURL, movieReviewURL, digitaloceanURL, loginURL, booksByTitleURL, searchBookURL} from './Settings';
+import URLS, {loginURL, booksByTitleURL, searchBookURL, createBookURL, deleteBookURL} from './Settings';
 
-function getServicePoints(address) {
-    const options = makeOptions("POST", true, address);
-    return fetch(servicepointsURL, options)
-        .then(handleHttpErrors);
-}
 
-function getMovieReviews(query) {
-    const options = makeOptions("POST", true, {query});
-    console.log(options);
-    return fetch(movieReviewURL, options)
-        .then(handleHttpErrors);
-}
-
-function getDigitalOceanInfo() {
-    const options = makeOptions("GET", true);
-    return fetch (digitaloceanURL, options)
-    .then(handleHttpErrors);
-}
-
-function searchWord(word) {
-    const URL = "https://tullebob.com/CA3_backend/api/dictionary/search";
-    //const URL = "https://api.chucknorris.io/jokes/random";
-    const options = makeOptions("POST", true, {word});
-    return fetch(URL, options)
-    .then(handleHttpErrors);
-}
 
 function getBooksTitle() {
     const options = makeOptions("GET", true);
@@ -40,6 +15,17 @@ function searchBook(title, author) {
 
 }
 
+function createBook(isbn, title, author, publisher, publishYear) {
+    const options = makeOptions("POST", true);
+    return fetch(createBookURL + "/" + isbn + "/" + title, + "/" + author + "/" + publisher + "/" + publishYear)
+    .then(handleHttpErrors);
+}
+
+function deleteBook(id) {
+    const options = makeOptions("DELETE", true);
+    return fetch(deleteBookURL + id, options)
+    .then(handleHttpErrors);
+}
 const setToken = (token) => {
     localStorage.setItem('jwtToken', token)
 }
@@ -64,17 +50,15 @@ const login = (user, password) => {
 
 
 const apiFacade = {
-    getServicePoints,
-    getMovieReviews,
-    getDigitalOceanInfo,
-    searchWord,
     setToken,
     getToken,
     loggedIn,
     logout,
     login,
     getBooksTitle,
-    searchBook
+    searchBook,
+    createBook,
+    deleteBook
 }
 
 function makeOptions(method, addToken, body) {

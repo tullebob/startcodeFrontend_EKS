@@ -156,17 +156,68 @@ export function BooksTitle() {
 }
 
 export function CreateBook(){
+    const [searchIsbn, setSearchIsbn] = useState("");
+    const [searchTitle, setSearchTitle] = useState("");
+    const [searchAuthor, setSearchAuthor] = useState("");
+    const [searchPublisher, setSearchPublisher] = useState("");
+    const [searchPublishYear, setSearchPublishYear] = useState("");
+
+
+    const initialValue = {
+        isbn: "",
+        title: "",
+        author: "",
+        publisher: "",
+        publishYear: ""
+    }
+
+    const [address, setAddress] = useState(initialValue);
+    const [servicePoints, setServicePoints] = useState([]);
+    let [isBlocking, setIsBlocking] = useState(false);
+
+    const handleChange = event => {
+        const { id, value } = event.target;
+        setIsBlocking(event.target.value.length > 0);
+        setAddress({ ...address, [id]: value })
+    };
+
+    const [searchArray, setSearchArray] = useState([]);
+
+    const handleSubmit = event => {
+        event.preventDefault();
+        apiFacade.createBook(searchIsbn, searchTitle, searchAuthor, searchPublisher, searchPublishYear)
+            .then(array => {
+                setSearchArray(array);
+                console.log(array);
+            })
+    }
     return(
         <div>
-            
+            <div>
+             <input placeholder="Enter Isbn..." onChange={(event) => setSearchIsbn(event.target.value)}/>
+             <input placeholder="Enter Title..." onChange={(event) => setSearchTitle(event.target.value)}/>
+             <input placeholder="Enter Authur..." onChange={(event) => setSearchAuthor(event.target.value)}/>
+             <input placeholder="Enter Publisher..." onChange={(event) => setSearchPublisher(event.target.value)}/>
+             <input placeholder="Enter Publish Year..." onChange={(event) => setSearchPublishYear(event.target.value)}/>
+             <button onClick={handleSubmit}>Create Book</button>
+             </div>
         </div>
     )
 }
 
 export function DeleteBook(){
+
+    const [bookID, setBookID] = useState("");
+    const handleSubmit = event => {
+        event.preventDefault();
+        apiFacade.deleteBook(bookID)
+    }
+
     return(
         <div>
-
+            <input placeholder="Enter ID..." onChange={(event) => setBookID(event.target.value)} />
+            <button onClick={handleSubmit}>Delete Book</button>
+            
         </div>
     )
 }
