@@ -1,4 +1,4 @@
-const mainURL = "tullebob.com/tomcat/startcodeBackend_EKS/api/";
+const mainURL = "/tomcat/startcodeBackend_EKS/api/";
 
 export const loginURL = mainURL + "login";
 
