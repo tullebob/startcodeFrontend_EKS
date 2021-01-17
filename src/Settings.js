@@ -1,4 +1,4 @@
-const mainURL = "http://localhost:8080/CA3_3SEM/api/";
+const mainURL = "tullebob.com/tomcat/startcodeBackend_EKS/api/";
 
 export const loginURL = mainURL + "login";
 
